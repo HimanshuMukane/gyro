@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>My Home</title>
+  <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+  <script src="https://cdn.rawgit.com/donmccurdy/aframe-extras/v6.0.0/dist/aframe-extras.min.js"></script>
+  <script src="https://cdn.rawgit.com/ngokevin/kframe/csstricks/components/text-geometry.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
+</head>
+
+<body>
+  <a-scene>
+      <a-assets>
+        <a-asset-item id="home-model" src="files/Home.gltf"></a-asset-item>
+        <a-asset-item id="npc-model" src="files/NPC.gltf"></a-asset-item>
+        <a-asset-item id="me-model" src="files/me.gltf"></a-asset-item>
+      </a-assets>
+  
+      <!-- Home Building -->
+      <a-entity gltf-model="#home-model" position="0 0 0" scale="1 1 1"></a-entity>
+  
+      <!-- Books -->
+      <a-entity gltf-model="files/Books.gltf" position="2 0.5 -3" scale="0.1 0.1 0.1"></a-entity>
+  
+      <!-- Computer -->
+      <a-entity gltf-model="files/Computer.gltf" position="-2 0.5 -3" scale="0.2 0.2 0.2"></a-entity>
+  
+      <!-- NPC -->
+      <a-entity id="npc" gltf-model="#npc-model" position="0 0.5 2" scale="0.1 0.1 0.1"></a-entity>
+  
+      <!-- Me -->
+      <a-entity id="me" gltf-model="#me-model" position="0 -1.2 -3" scale="0.1 0.1 0.1"></a-entity>
+  
+      <a-camera id="camera" look-controls="pointerLockEnabled: true">
+        <a-cursor id="cursor" raycaster="objects: [npc]; showLine: true" fuse="false"
+          cursor="rayOrigin: mouse"></a-cursor>
+    </a-camera>
+  </a-scene>
+  <script>
+    // Start the animation loop
+    function animate() {
+      requestAnimationFrame(animate);
+      TWEEN.update();
+    }
+    animate();
+
+    // Listen for the deviceorientation event to handle gyroscope data
+    window.addEventListener("deviceorientation", function (event) {
+      var camera = document.querySelector("#camera");
+      var cameraRotation = camera.getAttribute("rotation");
+
+      // Adjust rotation angles based on device orientation
+      var newRotationX = cameraRotation.x - event.beta;   // Roll
+      var newRotationY = cameraRotation.y + event.gamma;  // Yaw
+      var newRotationZ = cameraRotation.z + event.alpha;  // Compass direction (ignored in this case)
+
+      // Update the camera's rotation
+      camera.setAttribute("rotation", {
+        x: newRotationX,
+        y: newRotationY,
+        z: newRotationZ,
+      });
+    });
+  </script>
+</body>
+
+</html>
